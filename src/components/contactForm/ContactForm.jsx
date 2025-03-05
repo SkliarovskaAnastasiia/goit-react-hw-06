@@ -4,6 +4,8 @@ import { useId } from 'react';
 import css from './ContactForm.module.css';
 import { nanoid } from 'nanoid';
 import * as Yup from 'yup';
+import { useDispatch } from 'react-redux';
+import { addContact } from '../../redux/contactsSlice';
 
 const formValidation = Yup.object().shape({
   name: Yup.string()
@@ -16,9 +18,19 @@ const formValidation = Yup.object().shape({
     .required('Required'),
 });
 
-export default function ContactForm({ onSubmit }) {
+export default function ContactForm() {
   const nameId = useId();
   const numberId = useId();
+
+  const dispatch = useDispatch();
+
+  const handleSubmit = (values, action) => {
+    const newContact = { id: nanoid(), ...values };
+
+    dispatch(addContact(newContact));
+
+    action.resetForm();
+  };
 
   return (
     <Formik
@@ -26,12 +38,7 @@ export default function ContactForm({ onSubmit }) {
         name: '',
         number: '',
       }}
-      onSubmit={(values, action) => {
-        const newContact = { id: nanoid(), ...values };
-        onSubmit(newContact);
-
-        action.resetForm();
-      }}
+      onSubmit={handleSubmit}
       validationSchema={formValidation}
     >
       <Form className={css.contactForm}>

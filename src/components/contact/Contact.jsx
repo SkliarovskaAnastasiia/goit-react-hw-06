@@ -1,8 +1,16 @@
 import { PiUser } from 'react-icons/pi';
 import { PiPhone } from 'react-icons/pi';
 import css from './Contact.module.css';
+import { useDispatch } from 'react-redux';
+import { deleteContact } from '../../redux/contactsSlice';
 
-export default function Contact({ contact: { id, name, number }, onClick }) {
+export default function Contact({ contact: { id, name, number } }) {
+  const dispatch = useDispatch();
+
+  const handleDeleteContact = () => {
+    dispatch(deleteContact(id));
+  };
+
   return (
     <>
       <div className={css.contactInfoWrappper}>
@@ -17,9 +25,7 @@ export default function Contact({ contact: { id, name, number }, onClick }) {
       <button
         className={css.contactBtn}
         type="button"
-        onClick={() => {
-          onClick(id);
-        }}
+        onClick={handleDeleteContact}
       >
         Delete
       </button>
